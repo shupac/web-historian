@@ -25,6 +25,30 @@ module.exports.handleRequest = function (req, res) {
         }
       });
     }
+  } else if(req.method === "POST") {
+    if(route === "/") {
+      var postData = "";
+      req.on('data', function(chunk) {
+        postData += chunk;
+        console.log('Chunk received:', chunk);
+      });
+      req.on('end', function(){
+        fs.appendFile(exports.datadir,postData.split("=")[1]+"\n",function(err){
+          if(err){
+            res.writeHead(501);
+          } else{
+            res.writeHead(302);
+          }
+          res.end();
+        });
+        res.writeHead(302);
+        res.end();
+      });
+    } else {
+      res.writeHead(404);
+      res.end();
+    }
+
   }
   // console.log(exports.datadir);
 };
