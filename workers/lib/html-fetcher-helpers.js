@@ -16,7 +16,7 @@ exports.downloadUrls = function(urls){
 
   for(var i = 0 ; i < urls.length; i++){
     var options = {url : urls[i]};
-    httpGet.get(options, '../data/sites/'+urls[i], function (error, result) {
+    httpGet.get(options, __dirname+'/../../data/sites/'+urls[i], function (error, result) {
       if (error) {
         console.log(result);
         console.error(error);
