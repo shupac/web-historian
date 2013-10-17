@@ -1,0 +1,8 @@
+{
+  "name": "webHistorian",
+  "version": "0.0.1",
+  "dependencies": {
+    "http-get": "latest",
+    "mysql": "~2.0.0-alpha9"
+  }
+}
