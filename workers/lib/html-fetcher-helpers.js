@@ -22,21 +22,25 @@ exports.readUrls = function(filePath, cb){
 };
 
 exports.downloadUrls = function(urls){
-  console.log(urls);
   urls = urls.split("\n");
+  var getCounter = 0;
 
   connection.connect();
   for(var i = 0 ; i < urls.length; i++){
     var recordurl = urls[i];
     var http = require('http-get');
     var options = {
-      url: urls[i]
+      url: urls[i],
+      bufferType: "buffer"
     };
 
     var sqlCallback = function(err,result){
       if(err){console.log(err);}
-      else{console.log('Site updated and inserted into database: ' + result);}
-      if(this.i === 3) {
+      else{
+        console.log('Site updated and inserted into database: ' + urls[this.i]);
+        getCounter++;
+      }
+      if(getCounter === urls.length) {
         console.log('Sql update complete, closing connection.');
         connection.end();
       }
@@ -44,16 +48,14 @@ exports.downloadUrls = function(urls){
 
     var httpCallback = function(error, result){
       i = this.i;
-      console.log(this.i);
       if (error) {
         console.error(error);
       } else {
-        console.log(urls[i]);
-        var post  = {id: 1,
-                     url: urls[i],
+        var post  = {url: urls[i],
                      file: result.buffer,
-                     date: (new Date()).toString()};
-        var query = connection.query('INSERT INTO websites SET ?', post, sqlCallback.bind({i:this.i}));
+                     dateint: (new Date()).valueOf(),
+                     datestr: (new Date()).toString()};
+        var query = connection.query('INSERT INTO websites SET ?', post, sqlCallback.bind({i:i}));
       }
     };
 
