@@ -16,5 +16,5 @@ exports.write = function(urlString){
   fetcherHelpers.writeUrl(urlString);
 };
 
-exports.write('www.slashdot.com');
+// exports.write('www.slashdot.com');
 // exports.fetch();

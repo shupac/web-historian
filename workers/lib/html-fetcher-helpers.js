@@ -2,30 +2,43 @@ var fs = require('fs');
 // var httpGet = require('http-get');
 var mysql = require('mysql');
 var http = require('http-get');
-var connection = mysql.createConnection({
+var connectionOptions = {
   host     : 'localhost',
   user     : 'root',
   password : '',
   database : 'webhistorian'
-});
+};
+
 
 // connection.query('SELECT * from websites', function(err, rows, fields) {
 //   if (err) throw err;
 //   console.log('The solution is: ', rows);
 // });
 
-exports.readUrls = function(filePath, cb){
-  var siteStr;
-  fs.readFile(filePath,{encoding: 'utf8'}, function(err, data) {
-    if(err) throw err;
-    cb(data);
+exports.readUrls = function(cb){
+  var urls = [];
+  var connection = mysql.createConnection(connectionOptions);
+  connection.connect();
+
+  connection.query('SELECT url from urls', function(err, rows, fields) {
+    if (err){
+      connection.end();
+      throw err;
+    }
+    console.log(rows);
+    for(var i = 0 ; i < rows.length ; i++){
+      urls.push(rows[i].url);
+    }
+    connection.end();
+    console.log('Getting URLs from server...');
+    exports.downloadUrls(urls);
+    if(cb){cb(urls);}
   });
 };
 
 exports.downloadUrls = function(urls){
-  urls = urls.split("\n");
   var getCounter = 0;
-
+  var connection = mysql.createConnection(connectionOptions);
   connection.connect();
   for(var i = 0 ; i < urls.length; i++){
     var recordurl = urls[i];
@@ -63,9 +76,13 @@ exports.downloadUrls = function(urls){
 };
 
 exports.writeUrl = function(url) {
+  var connection = mysql.createConnection(connectionOptions);
   connection.connect();
   connection.query('SELECT url from urls', function(err, rows, fields) {
-    if (err) throw err;
+    if (err){
+      connection.end();
+      throw err;
+    }
     for(var i = 0 ; i < rows.length ; i++){
       if(rows[i].url === url){
         console.log('URL already found in table '+ url);
@@ -75,9 +92,13 @@ exports.writeUrl = function(url) {
     connection.query('INSERT INTO urls (url) value ("'+url+'")',function(err,result){
       if(err){
         console.log('Error inserting '+ url +' into table');
+        connection.end();
+        throw err;
       }
       console.log('URL inserted into table: '+ url);
-      connection.end();
+      // connection.end();
+      console.log('Downloading URLs...');
+      exports.readUrls();
     });
   });
 };

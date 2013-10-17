@@ -1,11 +1,13 @@
 var path = require('path');
 var url = require('url');
 var fs = require('fs');
+var fetcher = require(__dirname + '/../workers/htmlfetcher');
 module.exports.datadir = path.join(__dirname, "../data/sites.txt"); // tests will need to override this.
 
+
+
 module.exports.handleRequest = function (req, res) {
-  // if url is root, then respond with 200
-  // else 404
+  // console.log(req.method);
   var route = url.parse(req.url).pathname;
   if(req.method === "GET") {
     if(route === "/"){
@@ -33,14 +35,7 @@ module.exports.handleRequest = function (req, res) {
         console.log('Chunk received:', chunk);
       });
       req.on('end', function(){
-        fs.appendFile(exports.datadir,postData.split("=")[1]+"\n",function(err){
-          if(err){
-            res.writeHead(501);
-          } else{
-            res.writeHead(302);
-          }
-          res.end();
-        });
+        fetcher.write(postData);
         res.writeHead(302);
         res.end();
       });
@@ -48,7 +43,5 @@ module.exports.handleRequest = function (req, res) {
       res.writeHead(404);
       res.end();
     }
-
   }
-  // console.log(exports.datadir);
 };
