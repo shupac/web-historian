@@ -1,6 +1,7 @@
 var fs = require('fs');
-var httpGet = require('http-get');
-var mysql      = require('mysql');
+// var httpGet = require('http-get');
+var mysql = require('mysql');
+var http = require('http-get');
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
@@ -28,7 +29,6 @@ exports.downloadUrls = function(urls){
   connection.connect();
   for(var i = 0 ; i < urls.length; i++){
     var recordurl = urls[i];
-    var http = require('http-get');
     var options = {
       url: urls[i],
       bufferType: "buffer"
@@ -58,10 +58,28 @@ exports.downloadUrls = function(urls){
         var query = connection.query('INSERT INTO websites SET ?', post, sqlCallback.bind({i:i}));
       }
     };
-
-
     http.get(options, httpCallback.bind({i:i}));
   }
+};
+
+exports.writeUrl = function(url) {
+  connection.connect();
+  connection.query('SELECT url from urls', function(err, rows, fields) {
+    if (err) throw err;
+    for(var i = 0 ; i < rows.length ; i++){
+      if(rows[i].url === url){
+        console.log('URL already found in table '+ url);
+        return;
+      }
+    }
+    connection.query('INSERT INTO urls (url) value ("'+url+'")',function(err,result){
+      if(err){
+        console.log('Error inserting '+ url +' into table');
+      }
+      console.log('URL inserted into table: '+ url);
+      connection.end();
+    });
+  });
 };
 
 

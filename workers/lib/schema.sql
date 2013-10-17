@@ -5,3 +5,8 @@ create table websites (
   DATESTR varchar(255)
 )
 ;
+
+-- create table urls (
+--   URL varchar(255)
+-- )
+-- ;

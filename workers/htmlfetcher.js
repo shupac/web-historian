@@ -12,4 +12,9 @@ exports.fetch = function(){
 
 };
 
-exports.fetch();
+exports.write = function(urlString){
+  fetcherHelpers.writeUrl(urlString);
+};
+
+exports.write('www.slashdot.com');
+// exports.fetch();
