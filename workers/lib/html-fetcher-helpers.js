@@ -1,5 +1,4 @@
 var fs = require('fs');
-// var httpGet = require('http-get');
 var mysql = require('mysql');
 var http = require('http-get');
 var connectionOptions = {
@@ -8,12 +7,6 @@ var connectionOptions = {
   password : '',
   database : 'webhistorian'
 };
-
-
-// connection.query('SELECT * from websites', function(err, rows, fields) {
-//   if (err) throw err;
-//   console.log('The solution is: ', rows);
-// });
 
 exports.readUrls = function(cb){
   var urls = [];
@@ -96,7 +89,6 @@ exports.writeUrl = function(url) {
         throw err;
       }
       console.log('URL inserted into table: '+ url);
-      // connection.end();
       console.log('Downloading URLs...');
       exports.readUrls();
     });

@@ -28,10 +28,9 @@
       <div>
         <div ng-repeat="item in items">
           <h4>
-          <span>{{item.username + ": "}}</span>
+          <a href={{item}}>{{item}}</a>
           </h4>
           <span style = "color: white">----</span>
-          <span>{{item.message}} </span>
         </div>
       </div>
       </blockquote>
@@ -43,13 +42,14 @@
       $scope.POSTmessage = function(){
         $http.post("/", JSON.stringify($scope.domain));
         $('.input').val('');
+        $http.get("/secretroute").success(function(data,status){
+          $scope.items = data;
+        });
       };
 
-      // setInterval(function(){
-      //   $http.get("/chat").success(function(data,status){
-      //     $scope.items = data.reverse()
-      //   });
-      // },500);
+      $http.get("/secretroute").success(function(data,status){
+        $scope.items = data;
+      });
     }
   </script>
 </html>

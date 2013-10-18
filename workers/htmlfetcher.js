@@ -5,13 +5,6 @@
 
 var fetcherHelpers = require('./lib/html-fetcher-helpers');
 
-
-exports.fetch = function(){
-
-  fetcherHelpers.readUrls(__dirname + '/../data/'+ 'sites.txt', fetcherHelpers.downloadUrls);
-
-};
-
 exports.write = function(urlString){
   fetcherHelpers.writeUrl(urlString);
 };

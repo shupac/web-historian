@@ -1,13 +1,9 @@
 var path = require('path');
 var url = require('url');
 var fs = require('fs');
-var fetcher = require(__dirname + '/../workers/htmlfetcher');
-module.exports.datadir = path.join(__dirname, "../data/sites.txt"); // tests will need to override this.
-
-
+var fetcher = require(__dirname + '/../workers/lib/html-fetcher-helpers');
 
 module.exports.handleRequest = function (req, res) {
-  // console.log(req.method);
   var route = url.parse(req.url).pathname;
   if(req.method === "GET") {
     if(route === "/"){
@@ -50,7 +46,7 @@ module.exports.handleRequest = function (req, res) {
       });
       req.on('end', function(){
         console.log(JSON.parse(postData));
-        fetcher.write(JSON.parse(postData));
+        fetcher.writeUrl(JSON.parse(postData));
         res.writeHead(302);
         res.end();
       });
