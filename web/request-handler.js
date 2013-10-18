@@ -16,15 +16,29 @@ module.exports.handleRequest = function (req, res) {
         res.writeHead(200, {"Content-Type":"text/html"});
         res.end(html);
       });
+    } else if (route === "/secretroute"){
+      console.log('Request for URLs recieved');
+      fetcher.readUrls(function(urls){
+        console.log('Responding to request for URLs');
+        res.writeHead(200);
+        res.end(JSON.stringify(urls));
+      });
     } else {
-      fs.readFile(__dirname + '/../data/sites' + route, function(err, html) {
-        if(err) {
+      fetcher.readUrls(function(urls){
+        var found = false;
+        for(var i = 0; i < urls.length; i++) {
+          if(urls[i] === route.substring(1)) {
+            found = true;
+            fetcher.get(urls[i], function(data) {
+              res.writeHead(200, {"Content-Type":"text/html"});
+              res.end(data[0].FILE);
+            });
+          }
+        }
+        if(found===false){
           res.writeHead(404);
           res.end();
-        } else {
-          res.writeHead(200, {"Content-Type": "text/html"});
-          res.end(html);
-        }
+        };
       });
     }
   } else if(req.method === "POST") {
@@ -35,7 +49,8 @@ module.exports.handleRequest = function (req, res) {
         console.log('Chunk received:', chunk);
       });
       req.on('end', function(){
-        fetcher.write(postData);
+        console.log(JSON.parse(postData));
+        fetcher.write(JSON.parse(postData));
         res.writeHead(302);
         res.end();
       });

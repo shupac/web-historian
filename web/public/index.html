@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <link rel="stylesheet" type="text/css" href="styles.css" />
@@ -8,4 +8,48 @@
     <input type="input" name="url"></input>
   </form>
 </body>
+</html>
+ -->
+<!DOCTYPE HTML>
+<html ng-app>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+    <title>The Internet of Internets</title>
+    <link rel="stylesheet" type="text/css" href= "//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+  </head>
+  <body ng-controller="chat" style="background-color:#abc">
+    <div class="container" style="background-color: white; height: 100%">
+      <h1>The Internet of Internets</h1>
+      <form style = "font-weight: bold">
+        Enter a Domain Name: <input placeholder = "www.google.com" ng-model="domain">
+        <button type="button" class="btn btn-lg btn-primary" ng-click="POSTmessage()">Submit Message</button>
+      </form>
+      <blockquote>
+      <div>
+        <div ng-repeat="item in items">
+          <h4>
+          <span>{{item.username + ": "}}</span>
+          </h4>
+          <span style = "color: white">----</span>
+          <span>{{item.message}} </span>
+        </div>
+      </div>
+      </blockquote>
+    </div>
+  </body>
+  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script>
+    function chat($scope,$http){
+      $scope.POSTmessage = function(){
+        $http.post("/", JSON.stringify($scope.domain));
+        $('.input').val('');
+      };
+
+      // setInterval(function(){
+      //   $http.get("/chat").success(function(data,status){
+      //     $scope.items = data.reverse()
+      //   });
+      // },500);
+    }
+  </script>
 </html>

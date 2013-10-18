@@ -16,5 +16,10 @@ exports.write = function(urlString){
   fetcherHelpers.writeUrl(urlString);
 };
 
-// exports.write('www.slashdot.com');
-// exports.fetch();
+exports.get = function(url, cb) {
+  fetcherHelpers.get(url,cb);
+};
+
+exports.readUrls = function(cb) {
+  fetcherHelpers.readUrls(cb);
+};

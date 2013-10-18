@@ -103,4 +103,17 @@ exports.writeUrl = function(url) {
   });
 };
 
-
+exports.get = function(url, cb) {
+  console.log('Get request received for url: ', url);
+  var connection = mysql.createConnection(connectionOptions);
+  connection.connect();
+  connection.query("SELECT * from websites where url ='"+url+"' order by dateint limit 1,1;", function(err, rows, fields) {
+    if (err){
+      connection.end();
+      throw err;
+    }
+    console.log('Query executed for get request for: ', url);
+    cb(rows);
+    connection.end();
+  });
+};
